@@ -22,6 +22,7 @@ onmessage = ({ data }) => {
     .then(({ instance }) => {
       console.log("starting", id);
       let ret = instance.exports.run(x, y, d, id);
+      // console.log("returned", ret);
       postMessage("done");
     });
 };

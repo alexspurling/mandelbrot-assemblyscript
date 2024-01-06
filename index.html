@@ -31,12 +31,6 @@
           const imageData = context.createImageData(1200, 800);
           imageData.data.set(canvasData);
           context.putImageData(imageData, 0, 0);
-
-          // console.log(canvasData);
-          // for (let i = 0; i < 1200; i += 10) {
-          //   let offset = i * 4;
-          //   console.log(canvasData[offset]);
-          // }
         }
       };
       worker.postMessage({ memory, config, id: i * 200 + 100 });
