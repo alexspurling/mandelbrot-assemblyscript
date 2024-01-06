@@ -1,0 +1,14 @@
+{
+  "name": "mandelbrot",
+  "version": "1.0.0",
+  "description": "A simple demonstration of WebAssembly threads - for further details see the [associated blog post](https://blog.scottlogic.com/2019/07/15/multithreaded-webassembly.html).",
+  "main": "colour.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "wabt": "^1.0.32"
+  }
+}
