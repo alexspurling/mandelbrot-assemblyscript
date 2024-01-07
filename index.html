@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <body>
   <canvas width="1200" height="800"></canvas>
+  <div id="status"></div>
   <script>
     const memory = new WebAssembly.Memory({
       initial: 80,
@@ -25,12 +26,14 @@
       worker.onmessage = e => {
         doneCount++;
         if (doneCount === workerCount) {
-          console.log("done", performance.now() - start);
+          const timeTaken = performance.now() - start;
+          console.log("done", timeTaken);
           const canvasData = new Uint8Array(memory.buffer, 4, 1200 * 800 * 4);
           const context = document.querySelector("canvas").getContext("2d");
           const imageData = context.createImageData(1200, 800);
           imageData.data.set(canvasData);
           context.putImageData(imageData, 0, 0);
+          document.getElementById("status").innerHTML = `Rendered on ${workerCount} threads in ${timeTaken} ms`;
         }
       };
       worker.postMessage({ memory, config, id: i * 200 + 100 });

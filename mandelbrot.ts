@@ -1,24 +1,29 @@
+// Adapted from the single threaded AssemblyScript code by Colin Eberhardt:
+// https://github.com/ColinEberhardt/wasm-mandelbrot/tree/master/assemblyscript
+// And also the multi-threaded WebAssembly code by Colin Eberhardt:
+// https://blog.scottlogic.com/2019/07/15/multithreaded-webassembly.html
+// https://github.com/ColinEberhardt/mandelbrot-threaded-webassembly
+
+const WIDTH:  i32 = 1200;
+const HEIGHT: i32 = 800;
+const MAX_ITERATIONS: i32 = 10000;
 
 export function run(cx: f64, cy: f64, diameter: f64, thread: i32): void {
 
   let loc: i32 = 0;
 
-  // let maxIterations: u32 = u32(Math.floor(50 + Math.pow(Math.log10(2 / diameter), 4)));
-
-  // 50+log10(((4/abs(diff(xlims)))))^5
-
-  while (loc < (1200 * 800)) {
+  while (loc < WIDTH * HEIGHT) {
     loc = atomic.add<i32>(0, 1);
 
-    let x = loc % 1200;
-    let y = loc / 1200;
+    let x = loc % WIDTH;
+    let y = loc / WIDTH;
 
-    let offset = offsetFromCoordinate(x, y);
+    let offset = 4 + loc * 4;
     let numIterations = executeStep(cx, cy, x, y, diameter);
 
     // numIterations = thread; // uncomment to colour each pixel by the thread id
 
-    if (numIterations == 1000) {
+    if (numIterations == MAX_ITERATIONS) {
       store<i32>(offset, 0xFF000000);
     } else {
       store<u8>(offset + 0, colour(numIterations, 0,   4));
@@ -28,7 +33,6 @@ export function run(cx: f64, cy: f64, diameter: f64, thread: i32): void {
     }
   }
 }
-
 
 @inline
 function colour(iteration: u32, offset: i32, scale: i32): u8 {
@@ -41,9 +45,6 @@ function colour(iteration: u32, offset: i32, scale: i32): u8 {
   return 0;
 }
 
-const WIDTH:  i32 = 1200;
-const HEIGHT: i32 = 800;
-
 @inline
 function scale(domainStart: f64, domainLength: f64, screenLength: f64, step: f64): f64 {
   return domainStart + domainLength * ((step - screenLength) / screenLength);
@@ -53,11 +54,7 @@ function executeStep(cx: f64, cy: f64, x: i32, y: i32, diameter: f64): i32 {
   let verticalDiameter = diameter * HEIGHT / WIDTH;
   let rx = scale(cx, diameter, WIDTH, x);
   let ry = scale(cy, verticalDiameter, HEIGHT, y);
-  return iterateEquation(rx, ry, 1000);
-}
-
-function offsetFromCoordinate(x: i32, y: i32): i32 {
-  return 4 + 4800 * y + 4 * x;
+  return iterateEquation(rx, ry, MAX_ITERATIONS);
 }
 
 function iterateEquation(x0: f64, y0: f64, maxiterations: u32): u32 {
