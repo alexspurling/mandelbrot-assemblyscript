@@ -21,8 +21,10 @@ onmessage = ({ data }) => {
     )
     .then(({ instance }) => {
       console.log("starting", id);
-      let ret = instance.exports.run(x, y, d, id);
-      // console.log("returned", ret);
+      const startTime = performance.now();
+      let count = instance.exports.run(x, y, d, id);
+      const timeTaken = performance.now() - startTime;
+      console.log("Thread", id, "processed", count, "pixels in", timeTaken, "ms");
       postMessage("done");
     });
 };

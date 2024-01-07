@@ -2,6 +2,7 @@
 <body>
   <canvas width="1200" height="800"></canvas>
   <div id="status"></div>
+  <script src="coi-serviceworker.js"></script>
   <script>
     const memory = new WebAssembly.Memory({
       initial: 80,
@@ -33,7 +34,7 @@
           const imageData = context.createImageData(1200, 800);
           imageData.data.set(canvasData);
           context.putImageData(imageData, 0, 0);
-          document.getElementById("status").innerHTML = `Rendered on ${workerCount} threads in ${timeTaken} ms`;
+          document.getElementById("status").innerHTML = `Rendered on ${workerCount} threads in ${timeTaken.toFixed(2)} ms`;
         }
       };
       worker.postMessage({ memory, config, id: i * 200 + 100 });

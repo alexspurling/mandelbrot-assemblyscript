@@ -8,9 +8,11 @@ const WIDTH:  i32 = 1200;
 const HEIGHT: i32 = 800;
 const MAX_ITERATIONS: i32 = 10000;
 
-export function run(cx: f64, cy: f64, diameter: f64, thread: i32): void {
+export function run(cx: f64, cy: f64, diameter: f64, thread: i32): i32 {
 
   let loc: i32 = 0;
+
+  let count: i32 = 0;
 
   while (loc < WIDTH * HEIGHT) {
     loc = atomic.add<i32>(0, 1);
@@ -31,7 +33,11 @@ export function run(cx: f64, cy: f64, diameter: f64, thread: i32): void {
       store<u8>(offset + 2, colour(numIterations, 356, 4));
       store<u8>(offset + 3, 255);
     }
+
+    count += 1;
   }
+
+  return count;
 }
 
 @inline
